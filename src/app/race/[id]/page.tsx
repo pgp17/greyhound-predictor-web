@@ -158,7 +158,7 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                                     </div>
                                 );
                             }
-                            
+
                             const isExpanded = expandedDog === dog.trap;
                             // Limit to 5 without expanding, though the API currently only returns recent 5 anyway
                             const visibleForm = isExpanded ? dog.recentForm : dog.recentForm.slice(0, 5);
@@ -242,9 +242,10 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                     <div className="divide-y divide-white/5">
                         {dogsRanked.map((dog, index) => {
                             const probability = dog.ml.winProbability;
+                            const isMissing = probability === 0;
 
                             return (
-                                <div key={dog.id} className="px-8 py-6 flex items-center gap-6 hover:bg-white/[0.02] transition-colors group">
+                                <div key={dog.id} className={`px-8 py-6 flex items-center gap-6 hover:bg-white/[0.02] transition-colors group ${isMissing ? 'opacity-50' : ''}`}>
                                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold shrink-0 shadow-lg
                                       ${dog.trap === 1 ? 'bg-red-600 text-white' : ''}
                                       ${dog.trap === 2 ? 'bg-blue-600 text-white' : ''}
@@ -258,30 +259,39 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                                     <div className="w-48 shrink-0">
                                         <p className="text-base font-bold text-slate-200 group-hover:text-white transition-colors uppercase">{dog.name}</p>
                                     </div>
-                                    <div className="flex-1">
-                                        <div className="flex justify-between text-sm mb-1.5">
-                                            <span className="font-semibold text-slate-300">ML Model Win Probability</span>
-                                            <span className="font-bold text-white">{probability.toFixed(1)}%</span>
+
+                                    {isMissing ? (
+                                        <div className="flex-1 text-center py-2">
+                                            <span className="text-slate-500 italic text-sm">Awaiting ML Extraction Data...</span>
                                         </div>
-                                        <div className="h-2.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                                            <div
-                                                className={`h-full rounded-full transition-all duration-1000 ease-out
-                                                  ${index === 0 ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' :
-                                                        index === 1 ? 'bg-gradient-to-r from-blue-400 to-blue-500' :
-                                                            'bg-gradient-to-r from-slate-500 to-slate-600'}
-                                                `}
-                                                style={{ width: `${Math.max(probability, 1)}%` }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="w-32 shrink-0 text-right">
-                                        <div className="text-sm text-slate-400 mb-0.5 mt-4 group-hover:text-slate-300 transition-colors">
-                                            Average Time
-                                        </div>
-                                        <div className="text-lg font-bold text-white">
-                                            {dog.ml.avgTime > 0 ? `${dog.ml.avgTime.toFixed(2)}s` : 'N/A'}
-                                        </div>
-                                    </div>
+                                    ) : (
+                                        <>
+                                            <div className="flex-1">
+                                                <div className="flex justify-between text-sm mb-1.5">
+                                                    <span className="font-semibold text-slate-300">ML Model Win Probability</span>
+                                                    <span className="font-bold text-white">{probability.toFixed(1)}%</span>
+                                                </div>
+                                                <div className="h-2.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                                                    <div
+                                                        className={`h-full rounded-full transition-all duration-1000 ease-out
+                                                          ${index === 0 ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' :
+                                                                index === 1 ? 'bg-gradient-to-r from-blue-400 to-blue-500' :
+                                                                    'bg-gradient-to-r from-slate-500 to-slate-600'}
+                                                        `}
+                                                        style={{ width: `${Math.max(probability, 1)}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="w-32 shrink-0 text-right">
+                                                <div className="text-sm text-slate-400 mb-0.5 mt-4 group-hover:text-slate-300 transition-colors">
+                                                    Average Time
+                                                </div>
+                                                <div className="text-lg font-bold text-white">
+                                                    {dog.ml.avgTime > 0 ? `${dog.ml.avgTime.toFixed(2)}s` : 'N/A'}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             );
                         })}
