@@ -81,7 +81,7 @@ export default async function TrackPage({ params }: { params: Promise<{ name: st
                                                 <span className="text-sm font-medium text-slate-400">{distanceStr}</span>
                                             </div>
                                             <div className="text-sm font-medium mt-2">
-                                                <span className="text-slate-500">AI Preview: </span>
+                                                <span className="text-slate-500">Preview: </span>
                                                 <span className="text-indigo-400">Click to view predictions and form</span>
                                             </div>
                                         </div>

@@ -19,7 +19,7 @@ export default function Home() {
   useEffect(() => {
     const fetchLiveMeetings = async () => {
       try {
-        const res = await fetch("http://46.225.29.192:8000/api/races/today");
+        const res = await fetch("/api/proxy/races/today");
         if (!res.ok) throw new Error("Failed to fetch tracks");
         const data = await res.json();
         setMeetings(data.meetings || []);

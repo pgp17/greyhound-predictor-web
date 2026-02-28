@@ -49,7 +49,7 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
     useEffect(() => {
         const fetchRaceData = async () => {
             try {
-                const res = await fetch(`http://46.225.29.192:8000/api/race/${resolvedParams.id}`);
+                const res = await fetch(`/api/proxy/race/${resolvedParams.id}`);
                 if (!res.ok) {
                     const errText = await res.text();
                     throw new Error(errText || "Failed to fetch race details.");

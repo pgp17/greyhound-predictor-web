@@ -16,19 +16,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://greyhound-predictor.com'),
   title: {
-    default: "Greyhound Predictor | Pro AI Dog Racing Tips & Analytics",
+    default: "Greyhound Predictor | Pro Dog Racing Tips & Analytics",
     template: "%s | Greyhound Predictor"
   },
-  description: "Advanced Machine Learning Greyhound Predictor mathematically analyzing form, speed, and track biases. Access daily free tips, AI race cards, and professional tools.",
-  keywords: ["greyhound racing", "greyhound predictor", "dog racing tips", "AI greyhound predictions", "racing stats", "greyhound form", "free greyhound tips", "UK greyhound racing", "Timeform greyhounds"],
+  description: "Advanced Greyhound Predictor mathematically analyzing form, speed, and track biases. Access daily free tips, live race cards, and professional analysis tools.",
+  keywords: ["greyhound racing", "greyhound predictor", "dog racing tips", "greyhound predictions", "racing stats", "greyhound form", "free greyhound tips", "UK greyhound racing", "Timeform greyhounds"],
   authors: [{ name: "Greyhound Predictor Team" }],
   openGraph: {
     type: "website",
     locale: "en_GB",
     url: "https://greyhound-predictor.com",
     siteName: "Greyhound Predictor",
-    title: "Greyhound Predictor | Pro AI Dog Racing Tips",
-    description: "Advanced Machine Learning Greyhound Predictor. Daily free tips, live AI race cards, and professional analysis.",
+    title: "Greyhound Predictor | Pro Dog Racing Tips",
+    description: "Advanced Greyhound Predictor. Daily free tips, live race cards, and professional analysis.",
     images: [
       {
         url: "/og-image.jpg", // Placeholder for future graphic
@@ -40,8 +40,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Greyhound Predictor | Pro AI Dog Racing Tips",
-    description: "Advanced Machine Learning Greyhound Predictor. Daily free tips, live AI race cards, and professional analysis.",
+    title: "Greyhound Predictor | Pro Dog Racing Tips",
+    description: "Advanced Greyhound Predictor. Daily free tips, live race cards, and professional analysis.",
   },
   robots: {
     index: true,
@@ -81,7 +81,7 @@ export default function RootLayout({
               <span className="text-white">GREYHOUND</span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">PREDICTOR</span>
             </div>
-            <p className="text-slate-400 text-sm">Professional AI-driven Greyhound Racing Analysis</p>
+            <p className="text-slate-400 text-sm">Professional Greyhound Racing Analysis</p>
             <a href="mailto:contact@greyhound-predictor.com" className="text-indigo-400 hover:text-indigo-300 transition-colors text-sm font-medium">
               contact@greyhound-predictor.com
             </a>
