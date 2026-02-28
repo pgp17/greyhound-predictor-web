@@ -19,7 +19,8 @@ export default async function TrackPage({ params }: { params: Promise<{ name: st
     let errorMsg = null;
 
     try {
-        const res = await fetch(`http://46.225.29.192:8000/api/track/${name}`, {
+        const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000";
+        const res = await fetch(`${baseUrl}/api/proxy/track/${name}`, {
             next: { revalidate: 60 } // Cache for 60 seconds
         });
         if (!res.ok) {

@@ -19,7 +19,8 @@ export default function Home() {
   useEffect(() => {
     const fetchLiveMeetings = async () => {
       try {
-        const res = await fetch("http://46.225.29.192:8000/api/races/today");
+        const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000";
+        const res = await fetch(`${baseUrl}/api/proxy/races/today`, { cache: 'no-store' });
         if (!res.ok) throw new Error("Failed to fetch tracks");
         const data = await res.json();
         setMeetings(data.meetings || []);

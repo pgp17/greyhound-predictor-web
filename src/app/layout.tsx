@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://greyhound-predictor.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : 'https://greyhound-predictor.com'),
   title: {
     default: "Greyhound Predictor | Pro Dog Racing Tips & Analytics",
     template: "%s | Greyhound Predictor"
