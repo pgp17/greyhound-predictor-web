@@ -20,9 +20,15 @@ export default function Home() {
     const fetchLiveMeetings = async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000";
+        console.log("Fetching from:", `${baseUrl}/api/proxy/races/today`);
+
         const res = await fetch(`${baseUrl}/api/proxy/races/today`, { cache: 'no-store' });
+        console.log("Response status:", res.status);
+
         if (!res.ok) throw new Error("Failed to fetch tracks");
         const data = await res.json();
+        console.log("Payload exactly:", data);
+
         setMeetings(data.meetings || []);
       } catch (err) {
         console.error("Error loading live tracks:", err);
