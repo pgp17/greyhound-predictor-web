@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://greyhound-predictor.com'),
   title: {
     default: "Greyhound Predictor | Pro AI Dog Racing Tips & Analytics",
     template: "%s | Greyhound Predictor"

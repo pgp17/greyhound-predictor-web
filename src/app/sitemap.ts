@@ -1,14 +1,16 @@
 import { MetadataRoute } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://greyhound-predictor.com';
 
     // Base routes that are always present
-    const routes = [
+    const routes: MetadataRoute.Sitemap = [
         {
             url: baseUrl,
             lastModified: new Date(),
-            changeFrequency: 'daily' as const,
+            changeFrequency: 'daily',
             priority: 1.0,
         },
     ];
@@ -24,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 routes.push({
                     url: `${baseUrl}/track/${track.id}`,
                     lastModified: new Date(),
-                    changeFrequency: 'hourly' as const,
+                    changeFrequency: 'hourly',
                     priority: 0.8,
                 });
             });
@@ -41,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                             routes.push({
                                 url: `${baseUrl}/race/${race.id}`,
                                 lastModified: new Date(),
-                                changeFrequency: 'daily' as const,
+                                changeFrequency: 'daily',
                                 priority: 0.9,
                             });
                         });
