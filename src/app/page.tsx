@@ -1,65 +1,94 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { MapPin, TrendingUp, Clock, ChevronRight } from "lucide-react";
+
+interface Meeting {
+  id: string;
+  name: string;
+  raceCount: number;
+  topPick: string;
+  firstRace: string;
+}
 
 export default function Home() {
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLiveMeetings = async () => {
+      try {
+        const res = await fetch("http://46.225.29.192:8000/api/races/today");
+        if (!res.ok) throw new Error("Failed to fetch tracks");
+        const data = await res.json();
+        setMeetings(data.meetings || []);
+      } catch (err) {
+        console.error("Error loading live tracks:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLiveMeetings();
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="max-w-6xl mx-auto px-6 py-10 space-y-8">
+      {/* Top Stats Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex items-center gap-4">
+          <div className="p-3 rounded-lg bg-blue-500/10">
+            <TrendingUp className="w-6 h-6 text-blue-400" />
+          </div>
+          <div>
+            <p className="text-sm text-slate-400">Today's Win Rate</p>
+            <p className="text-2xl font-bold text-white">38.5%</p>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex items-center gap-4">
+          <div className="p-3 rounded-lg bg-indigo-500/10">
+            <Clock className="w-6 h-6 text-indigo-400" />
+          </div>
+          <div>
+            <p className="text-sm text-slate-400">Races Analyzed</p>
+            <p className="text-2xl font-bold text-white">42</p>
+          </div>
         </div>
-      </main>
+      </div>
+
+      <div>
+        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <MapPin className="w-5 h-5 text-indigo-400" /> Today's Meetings
+        </h2>
+
+        {loading ? (
+          <div className="flex justify-center items-center h-40">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+          </div>
+        ) : meetings.length === 0 ? (
+          <div className="text-center text-slate-400 py-10 bg-white/[0.02] border border-white/5 rounded-2xl">
+            No races available in the database for today.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {meetings.map((meeting) => (
+              <Link key={meeting.id} href={`/track/${meeting.id}`}>
+                <div className="bg-[#0D131F] border border-white/5 rounded-2xl p-6 hover:border-indigo-500/50 hover:bg-white/[0.03] transition-all group flex justify-between items-center cursor-pointer shadow-lg">
+                  <div>
+                    <h3 className="text-xl font-bold text-white uppercase tracking-wide mb-1">{meeting.name}</h3>
+                    <p className="text-sm text-slate-400 font-medium">{meeting.raceCount} Races • First Race: {meeting.firstRace}</p>
+                    {/* Best Bet is a placeholder until we run the analyzer live */}
+                    <p className="text-xs text-indigo-400 mt-2 font-semibold">Best Bet: {meeting.topPick}</p>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
+                    <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white" />
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
