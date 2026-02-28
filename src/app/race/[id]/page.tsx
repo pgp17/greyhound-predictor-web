@@ -137,7 +137,28 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                 {/* Dog Form Tab */}
                 {activeTab === 'form' && (
                     <div className="divide-y divide-white/5">
-                        {raceData.dogs.map((dog) => {
+                        {[1, 2, 3, 4, 5, 6].map((trapNum) => {
+                            const dog = raceData.dogs.find(d => d.trap === trapNum);
+                            if (!dog) {
+                                return (
+                                    <div key={`vacant-${trapNum}`} className="p-6 md:p-8 hover:bg-white/[0.01] transition-colors opacity-40">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold shrink-0 shadow-lg
+                                              ${trapNum === 1 ? 'bg-red-600 text-white' : ''}
+                                              ${trapNum === 2 ? 'bg-blue-600 text-white' : ''}
+                                              ${trapNum === 3 ? 'bg-white text-black' : ''}
+                                              ${trapNum === 4 ? 'bg-black text-white border border-white/20' : ''}
+                                              ${trapNum === 5 ? 'bg-orange-500 text-white' : ''}
+                                              ${trapNum === 6 ? 'bg-black border border-white/20 striped-bg' : ''}
+                                            `} style={{ color: trapNum === 6 ? '#ef4444' : undefined }}>
+                                                {trapNum}
+                                            </div>
+                                            <h3 className="text-xl font-bold text-slate-500 tracking-wide italic">VACANT TRAP</h3>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                            
                             const isExpanded = expandedDog === dog.trap;
                             // Limit to 5 without expanding, though the API currently only returns recent 5 anyway
                             const visibleForm = isExpanded ? dog.recentForm : dog.recentForm.slice(0, 5);
@@ -152,8 +173,8 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                                               ${dog.trap === 3 ? 'bg-white text-black' : ''}
                                               ${dog.trap === 4 ? 'bg-black text-white border border-white/20' : ''}
                                               ${dog.trap === 5 ? 'bg-orange-500 text-white' : ''}
-                                              ${dog.trap === 6 ? 'bg-black text-red-500 border border-white/20 striped-bg' : ''}
-                                            `}>
+                                              ${dog.trap === 6 ? 'bg-black border border-white/20 striped-bg' : ''}
+                                            `} style={{ color: dog.trap === 6 ? '#ef4444' : undefined }}>
                                                 {dog.trap}
                                             </div>
                                             <h3 className="text-xl font-bold text-white tracking-wide">{dog.name}</h3>
@@ -230,8 +251,8 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                                       ${dog.trap === 3 ? 'bg-white text-black' : ''}
                                       ${dog.trap === 4 ? 'bg-black text-white border border-white/20' : ''}
                                       ${dog.trap === 5 ? 'bg-orange-500 text-white' : ''}
-                                      ${dog.trap === 6 ? 'bg-black text-red-500 border border-white/20 striped-bg' : ''}
-                                    `}>
+                                      ${dog.trap === 6 ? 'bg-black border border-white/20 striped-bg' : ''}
+                                    `} style={{ color: dog.trap === 6 ? '#ef4444' : undefined }}>
                                         {dog.trap}
                                     </div>
                                     <div className="w-48 shrink-0">

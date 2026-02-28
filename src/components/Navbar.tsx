@@ -9,10 +9,6 @@ export default function Navbar() {
                         <h1 className="text-xl font-bold tracking-tight text-white">Greyhound<span className="text-indigo-400">Predictor</span></h1>
                     </div>
                 </Link>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-xs font-semibold text-emerald-400">Live API Connected</span>
-                </div>
             </div>
         </header>
     );

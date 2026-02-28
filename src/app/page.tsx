@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MapPin, TrendingUp, Clock, ChevronRight } from "lucide-react";
+import { MapPin, ChevronRight, Calendar } from "lucide-react";
 
 interface Meeting {
   id: string;
@@ -38,33 +38,17 @@ export default function Home() {
     fetchLiveMeetings();
   }, []);
 
+  const formattedDate = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  });
+
   return (
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-8">
-      {/* Top Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex items-center gap-4">
-          <div className="p-3 rounded-lg bg-blue-500/10">
-            <TrendingUp className="w-6 h-6 text-blue-400" />
-          </div>
-          <div>
-            <p className="text-sm text-slate-400">Today's Win Rate</p>
-            <p className="text-2xl font-bold text-white">38.5%</p>
-          </div>
-        </div>
-        <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex items-center gap-4">
-          <div className="p-3 rounded-lg bg-indigo-500/10">
-            <Clock className="w-6 h-6 text-indigo-400" />
-          </div>
-          <div>
-            <p className="text-sm text-slate-400">Races Analyzed</p>
-            <p className="text-2xl font-bold text-white">42</p>
-          </div>
-        </div>
-      </div>
-
       <div>
         <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-indigo-400" /> Today's Meetings
+          <MapPin className="w-5 h-5 text-indigo-400" /> Today's Meetings <span className="text-slate-400 font-normal ml-2 flex items-center gap-1"><Calendar className="w-4 h-4" />{formattedDate}</span>
         </h2>
 
         {loading ? (
@@ -83,8 +67,6 @@ export default function Home() {
                   <div>
                     <h3 className="text-xl font-bold text-white uppercase tracking-wide mb-1">{meeting.name}</h3>
                     <p className="text-sm text-slate-400 font-medium">{meeting.raceCount} Races • First Race: {meeting.firstRace}</p>
-                    {/* Best Bet is a placeholder until we run the analyzer live */}
-                    <p className="text-xs text-indigo-400 mt-2 font-semibold">Best Bet: {meeting.topPick}</p>
                   </div>
                   <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
                     <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white" />
