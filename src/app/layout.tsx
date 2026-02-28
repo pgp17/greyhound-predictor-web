@@ -14,8 +14,48 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GreyhoundPredictor",
-  description: "Professional Greyhound Racing Analysis",
+  title: {
+    default: "Greyhound Predictor | Pro AI Dog Racing Tips & Analytics",
+    template: "%s | Greyhound Predictor"
+  },
+  description: "Advanced Machine Learning Greyhound Predictor mathematically analyzing form, speed, and track biases. Access daily free tips, AI race cards, and professional tools.",
+  keywords: ["greyhound racing", "greyhound predictor", "dog racing tips", "AI greyhound predictions", "racing stats", "greyhound form", "free greyhound tips", "UK greyhound racing", "Timeform greyhounds"],
+  authors: [{ name: "Greyhound Predictor Team" }],
+  openGraph: {
+    type: "website",
+    locale: "en_GB",
+    url: "https://greyhound-predictor.com",
+    siteName: "Greyhound Predictor",
+    title: "Greyhound Predictor | Pro AI Dog Racing Tips",
+    description: "Advanced Machine Learning Greyhound Predictor. Daily free tips, live AI race cards, and professional analysis.",
+    images: [
+      {
+        url: "/og-image.jpg", // Placeholder for future graphic
+        width: 1200,
+        height: 630,
+        alt: "Greyhound Predictor AI Platform",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Greyhound Predictor | Pro AI Dog Racing Tips",
+    description: "Advanced Machine Learning Greyhound Predictor. Daily free tips, live AI race cards, and professional analysis.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    // google: "YOUR_GOOGLE_VERIFICATION_CODE", // We will add this later when they setup Google Search Console
+  },
 };
 
 export default function RootLayout({
