@@ -20,7 +20,7 @@ export default async function TrackPage({ params }: { params: Promise<{ name: st
 
     try {
         const res = await fetch(`http://46.225.29.192:8000/api/track/${name}`, {
-            next: { revalidate: 60 } // Cache for 60 seconds
+            cache: 'no-store' // Force dynamic fetch to bypass stuck Vercel caches
         });
         if (!res.ok) {
             throw new Error('Failed to fetch track schedule');
