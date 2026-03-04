@@ -215,7 +215,7 @@ export default function Home() {
           {/* Race cards */}
           <div className="space-y-3">
             {filteredPicks.map((pick, i) => (
-              <Link key={`${pick.race_id}-${i}`} href={`/track/${pick.track.toLowerCase().replace(/\s+/g, '-')}`}>
+              <Link key={`${pick.race_id}-${i}`} href={`/race/${pick.race_id}`}>
                 <div
                   className={`bg-[#0D131F] border rounded-2xl p-4 sm:p-5 transition-all hover:translate-y-[-2px] hover:shadow-xl cursor-pointer ${pick.stars >= 5
                     ? "border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.08)]"
