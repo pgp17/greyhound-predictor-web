@@ -203,7 +203,7 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                                                         <th className="px-4 py-3">Dist</th>
                                                         <th className="px-4 py-3">Grade</th>
                                                         <th className="px-4 py-3">Split</th>
-                                                        <th className="px-4 py-3">Remarks</th>
+                                                        <th className="px-4 py-3">Race</th>
                                                         <th className="px-4 py-3">Time</th>
                                                         <th className="px-4 py-3">Going</th>
                                                         <th className="px-4 py-3">Wght</th>
@@ -217,11 +217,11 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                                                             <td className="px-4 py-2.5">{f.track}</td>
                                                             <td className="px-4 py-2.5">{f.distance}</td>
                                                             <td className="px-4 py-2.5">{f.grade}</td>
-                                                            <td className="px-4 py-2.5 font-mono text-slate-300">{f.sectional !== 'None' ? f.sectional : '-'}</td>
-                                                            <td className="px-4 py-2.5 max-w-[200px] truncate" title={f.remarks}>{f.remarks}</td>
-                                                            <td className="px-4 py-2.5 font-mono">{f.time}s</td>
-                                                            <td className="px-4 py-2.5 text-center">{f.going}</td>
-                                                            <td className="px-4 py-2.5 text-center">{f.weight}</td>
+                                                            <td className="px-4 py-2.5 font-mono text-slate-300">{f.sectional || '—'}</td>
+                                                            <td className="px-4 py-2.5 max-w-[200px] truncate" title={f.remarks}>{f.remarks || '—'}</td>
+                                                            <td className="px-4 py-2.5 font-mono">{f.time ? `${f.time}s` : '—'}</td>
+                                                            <td className="px-4 py-2.5 text-center">{f.going || '—'}</td>
+                                                            <td className="px-4 py-2.5 text-center">{f.weight || '—'}</td>
                                                             <td className="px-4 py-2.5 font-bold">
                                                                 <span className="bg-white/10 px-2.5 py-1 rounded text-white">{f.pos}</span>
                                                             </td>
