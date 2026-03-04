@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MapPin, ChevronRight, Calendar, Star, Zap, Filter } from "lucide-react";
+import { ChevronRight, Calendar, Star, Filter } from "lucide-react";
 
 interface Meeting {
   id: string;
@@ -38,20 +38,20 @@ interface PredictionsData {
 }
 
 const trapColors: Record<number, string> = {
-  1: "bg-red-500",
-  2: "bg-blue-500",
-  3: "bg-white/90 text-gray-900",
-  4: "bg-emerald-500",
-  5: "bg-amber-500 text-gray-900",
-  6: "bg-gray-800 border border-gray-600",
+  1: "bg-red-700",
+  2: "bg-blue-700",
+  3: "bg-white/90 text-[#111318]",
+  4: "bg-neutral-800 border border-white/10",
+  5: "bg-orange-600",
+  6: "bg-neutral-800 border border-white/10",
 };
 
-const starBadgeStyles: Record<number, string> = {
-  5: "bg-amber-500/20 text-amber-400 border-amber-500/40",
-  4: "bg-violet-500/20 text-violet-400 border-violet-500/40",
-  3: "bg-emerald-500/20 text-emerald-400 border-emerald-500/40",
-  2: "bg-slate-500/20 text-slate-400 border-slate-500/30",
-  1: "bg-slate-800/50 text-slate-500 border-slate-700/30",
+const starTierStyles: Record<number, { border: string; accent: string; label: string }> = {
+  5: { border: "border-[#c9a84c]/30", accent: "text-[#c9a84c]", label: "bg-[#c9a84c]/10 text-[#c9a84c] border-[#c9a84c]/25" },
+  4: { border: "border-white/10", accent: "text-white/60", label: "bg-white/[0.06] text-white/50 border-white/10" },
+  3: { border: "border-white/[0.06]", accent: "text-white/40", label: "bg-white/[0.04] text-white/35 border-white/[0.06]" },
+  2: { border: "border-white/[0.04]", accent: "text-white/25", label: "bg-white/[0.03] text-white/25 border-white/[0.04]" },
+  1: { border: "border-white/[0.03]", accent: "text-white/20", label: "bg-white/[0.02] text-white/20 border-white/[0.03]" },
 };
 
 function StarRating({ count }: { count: number }) {
@@ -60,15 +60,13 @@ function StarRating({ count }: { count: number }) {
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
-          className={`w-4 h-4 ${i <= count
-            ? count >= 5
-              ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]"
-              : count >= 4
-                ? "text-violet-400 fill-violet-400"
-                : count >= 3
-                  ? "text-emerald-400 fill-emerald-400"
-                  : "text-slate-500 fill-slate-500"
-            : "text-slate-700"
+          className={`w-3.5 h-3.5 ${i <= count
+              ? count >= 5
+                ? "text-[#c9a84c] fill-[#c9a84c]"
+                : count >= 4
+                  ? "text-white/50 fill-white/50"
+                  : "text-white/30 fill-white/30"
+              : "text-white/[0.06]"
             }`}
         />
       ))}
@@ -110,6 +108,7 @@ export default function Home() {
   }, []);
 
   const formattedDate = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -125,74 +124,72 @@ export default function Home() {
   ) || {};
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+    <div className="max-w-5xl mx-auto px-6 py-8 space-y-6">
       {/* Header */}
-      <div className="text-center space-y-2">
-        <h2 className="text-lg font-semibold text-white flex items-center justify-center gap-2">
-          <Calendar className="w-5 h-5 text-indigo-400" />
+      <div className="space-y-1">
+        <div className="flex items-center gap-2 text-white/25 text-xs uppercase tracking-widest">
+          <Calendar className="w-3.5 h-3.5" />
           {formattedDate}
-        </h2>
+        </div>
         {predictions && (
-          <span className="inline-block text-xs font-semibold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-3 py-1">
-            🤖 {predictions.model} — 114 features
-          </span>
+          <div className="text-[11px] text-white/15 font-medium">
+            {predictions.model} · {predictions.total_races} races analysed
+          </div>
         )}
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 justify-center">
+      <div className="flex border border-white/[0.08] rounded-lg overflow-hidden w-fit">
         <button
           onClick={() => setActiveTab("predictions")}
-          className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "predictions"
-            ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25"
-            : "bg-white/5 text-slate-400 hover:bg-white/10"
+          className={`px-5 py-2 text-xs font-medium uppercase tracking-wider transition-all ${activeTab === "predictions"
+              ? "bg-white/[0.08] text-white"
+              : "text-white/30 hover:text-white/50 hover:bg-white/[0.02]"
             }`}
         >
-          <Zap className="w-4 h-4 inline mr-1.5 -mt-0.5" />
           Predictions
         </button>
         <button
           onClick={() => setActiveTab("meetings")}
-          className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "meetings"
-            ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25"
-            : "bg-white/5 text-slate-400 hover:bg-white/10"
+          className={`px-5 py-2 text-xs font-medium uppercase tracking-wider transition-all border-l border-white/[0.08] ${activeTab === "meetings"
+              ? "bg-white/[0.08] text-white"
+              : "text-white/30 hover:text-white/50 hover:bg-white/[0.02]"
             }`}
         >
-          <MapPin className="w-4 h-4 inline mr-1.5 -mt-0.5" />
           Meetings ({meetings.length})
         </button>
       </div>
 
       {loading ? (
         <div className="flex justify-center items-center h-40">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+          <div className="w-7 h-7 border-2 border-[#c9a84c]/30 border-t-[#c9a84c] rounded-full animate-spin" />
         </div>
       ) : activeTab === "predictions" ? (
         /* PREDICTIONS TAB */
-        <div className="space-y-4">
-          {/* Summary cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-[#0D131F] border border-white/5 rounded-2xl p-4 text-center">
-              <div className="text-2xl font-bold text-indigo-400">{predictions?.total_races || 0}</div>
-              <div className="text-xs text-slate-500 mt-1">Races</div>
+        <div className="space-y-5">
+          {/* Summary row */}
+          <div className="flex gap-6 text-xs">
+            <div>
+              <span className="text-white/20 uppercase tracking-wider">Total</span>
+              <span className="ml-2 text-white/70 font-semibold tabular-nums">{predictions?.total_races || 0}</span>
             </div>
-            <div className="bg-[#0D131F] border border-amber-500/20 rounded-2xl p-4 text-center">
-              <div className="text-2xl font-bold text-amber-400">{starCounts[5] || 0}</div>
-              <div className="text-xs text-slate-500 mt-1">★★★★★</div>
+            <div>
+              <span className="text-[#c9a84c]/50 uppercase tracking-wider">★★★★★</span>
+              <span className="ml-2 text-[#c9a84c] font-semibold tabular-nums">{starCounts[5] || 0}</span>
             </div>
-            <div className="bg-[#0D131F] border border-violet-500/20 rounded-2xl p-4 text-center">
-              <div className="text-2xl font-bold text-violet-400">{starCounts[4] || 0}</div>
-              <div className="text-xs text-slate-500 mt-1">★★★★</div>
+            <div>
+              <span className="text-white/20 uppercase tracking-wider">★★★★</span>
+              <span className="ml-2 text-white/50 font-semibold tabular-nums">{starCounts[4] || 0}</span>
             </div>
-            <div className="bg-[#0D131F] border border-emerald-500/20 rounded-2xl p-4 text-center">
-              <div className="text-2xl font-bold text-emerald-400">{starCounts[3] || 0}</div>
-              <div className="text-xs text-slate-500 mt-1">★★★</div>
+            <div>
+              <span className="text-white/15 uppercase tracking-wider">★★★</span>
+              <span className="ml-2 text-white/35 font-semibold tabular-nums">{starCounts[3] || 0}</span>
             </div>
           </div>
 
           {/* Filters */}
-          <div className="flex gap-2 flex-wrap items-center">
-            <Filter className="w-4 h-4 text-slate-500" />
+          <div className="flex gap-1.5 flex-wrap items-center">
+            <Filter className="w-3.5 h-3.5 text-white/15 mr-1" />
             {[
               { label: `All (${predictions?.total_races || 0})`, value: 0 },
               { label: `★★★★★ (${starCounts[5] || 0})`, value: 5 },
@@ -202,9 +199,9 @@ export default function Home() {
               <button
                 key={f.value}
                 onClick={() => setMinStars(f.value)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${minStars === f.value
-                  ? "bg-indigo-500 text-white"
-                  : "bg-white/5 text-slate-400 hover:bg-white/10"
+                className={`px-3 py-1 rounded text-[11px] font-medium transition-all ${minStars === f.value
+                    ? "bg-white/[0.08] text-white"
+                    : "text-white/25 hover:text-white/40 hover:bg-white/[0.03]"
                   }`}
               >
                 {f.label}
@@ -213,114 +210,108 @@ export default function Home() {
           </div>
 
           {/* Race cards */}
-          <div className="space-y-3">
-            {filteredPicks.map((pick, i) => (
-              <Link key={`${pick.race_id}-${i}`} href={`/race/${pick.race_id}`}>
-                <div
-                  className={`bg-[#0D131F] border rounded-2xl p-4 sm:p-5 transition-all hover:translate-y-[-2px] hover:shadow-xl cursor-pointer ${pick.stars >= 5
-                    ? "border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.08)]"
-                    : pick.stars >= 4
-                      ? "border-violet-500/20"
-                      : pick.stars >= 3
-                        ? "border-emerald-500/15"
-                        : "border-white/5"
-                    }`}
-                >
-                  {/* Top row */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-slate-500 font-medium">{pick.track}</span>
-                      <span className="text-xs text-slate-600">•</span>
-                      <span className="text-xs text-slate-500">{pick.time}</span>
+          <div className="space-y-2">
+            {filteredPicks.map((pick, i) => {
+              const tier = starTierStyles[pick.stars] || starTierStyles[1];
+              return (
+                <Link key={`${pick.race_id}-${i}`} href={`/race/${pick.race_id}`}>
+                  <div
+                    className={`bg-[#15181f] border rounded-lg p-4 transition-all hover:bg-[#1a1e27] cursor-pointer ${tier.border}`}
+                  >
+                    {/* Top row */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] text-white/30 font-medium uppercase tracking-wider">{pick.track}</span>
+                        <span className="text-white/10">·</span>
+                        <span className="text-[11px] text-white/20">{pick.time}</span>
+                      </div>
+                      {pick.stars >= 3 && (
+                        <span
+                          className={`text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wider border ${tier.label}`}
+                        >
+                          {pick.label}
+                        </span>
+                      )}
                     </div>
-                    {pick.stars >= 3 && (
-                      <span
-                        className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border ${starBadgeStyles[pick.stars]}`}
-                      >
-                        {pick.label}
-                      </span>
-                    )}
-                  </div>
 
-                  {/* Main row */}
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div
-                      className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0 ${trapColors[pick.trap] || "bg-gray-700"
-                        }`}
-                    >
-                      T{pick.trap}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <span className="font-bold text-white text-base sm:text-lg block truncate">
-                        {pick.dog_name}
-                      </span>
-                      <span className="text-xs text-slate-500">
-                        {pick.distance}m • Grade {pick.grade}
-                      </span>
-                    </div>
-                    <div className="flex-shrink-0">
+                    {/* Main row */}
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-9 h-9 rounded flex items-center justify-center font-bold text-xs shrink-0 ${trapColors[pick.trap] || "bg-neutral-700"
+                          }`}
+                      >
+                        T{pick.trap}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="font-semibold text-white/90 text-sm block truncate">
+                          {pick.dog_name}
+                        </span>
+                        <span className="text-[11px] text-white/20">
+                          {pick.distance}m · Grade {pick.grade}
+                        </span>
+                      </div>
                       <StarRating count={pick.stars} />
                     </div>
-                  </div>
 
-                  {/* Stats row */}
-                  <div className="grid grid-cols-4 gap-3 mt-3 pt-3 border-t border-white/5">
-                    <div>
-                      <span className="text-[10px] text-slate-600 uppercase block">Prob</span>
-                      <span className="text-sm font-semibold text-white">
-                        {(pick.prob * 100).toFixed(1)}%
-                      </span>
-                      <div className="h-1 bg-slate-800 rounded-full mt-1">
-                        <div
-                          className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full"
-                          style={{ width: `${Math.min(pick.prob * 200, 100)}%` }}
-                        />
+                    {/* Stats row */}
+                    <div className="grid grid-cols-4 gap-4 mt-3 pt-3 border-t border-white/[0.04]">
+                      <div>
+                        <span className="text-[10px] text-white/15 uppercase block tracking-wider">Prob</span>
+                        <span className="text-xs font-semibold text-white/60 tabular-nums">
+                          {(pick.prob * 100).toFixed(1)}%
+                        </span>
+                        <div className="h-[3px] bg-white/[0.04] rounded-full mt-1">
+                          <div
+                            className="h-full bg-[#c9a84c]/60 rounded-full"
+                            style={{ width: `${Math.min(pick.prob * 200, 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-white/15 uppercase block tracking-wider">Margin</span>
+                        <span className="text-xs font-semibold text-white/60 tabular-nums">
+                          {(pick.margin * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-white/15 uppercase block tracking-wider">Elo</span>
+                        <span className="text-xs font-semibold text-white/60 tabular-nums">{pick.elo?.toFixed(0) || "—"}</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-white/15 uppercase block tracking-wider">WR</span>
+                        <span className="text-xs font-semibold text-white/60 tabular-nums">
+                          {pick.win_rate ? `${(pick.win_rate * 100).toFixed(0)}%` : "—"}
+                        </span>
                       </div>
                     </div>
-                    <div>
-                      <span className="text-[10px] text-slate-600 uppercase block">Margin</span>
-                      <span className="text-sm font-semibold text-white">
-                        {(pick.margin * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-slate-600 uppercase block">Elo</span>
-                      <span className="text-sm font-semibold text-white">{pick.elo?.toFixed(0) || "—"}</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-slate-600 uppercase block">WR</span>
-                      <span className="text-sm font-semibold text-white">
-                        {pick.win_rate ? `${(pick.win_rate * 100).toFixed(0)}%` : "—"}
-                      </span>
-                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
       ) : (
         /* MEETINGS TAB */
         <div>
           {meetings.length === 0 ? (
-            <div className="text-center text-slate-400 py-10 bg-white/[0.02] border border-white/5 rounded-2xl">
-              No races available in the database for today.
+            <div className="text-center text-white/25 py-10 border border-white/[0.04] rounded-lg text-sm">
+              No races available for today.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
               {meetings.map((meeting) => (
                 <Link key={meeting.id} href={`/track/${meeting.id}`}>
-                  <div className="bg-[#0D131F] border border-white/5 rounded-2xl p-6 hover:border-indigo-500/50 hover:bg-white/[0.03] transition-all group flex justify-between items-center cursor-pointer shadow-lg">
+                  <div className="bg-[#15181f] border border-white/[0.06] rounded-lg p-5 hover:border-white/[0.12] hover:bg-[#1a1e27] transition-all group flex justify-between items-center cursor-pointer">
                     <div>
-                      <h3 className="text-xl font-bold text-white uppercase tracking-wide mb-1">
+                      <h3 className="text-sm font-semibold text-white/85 uppercase tracking-wide">
                         {meeting.name}
                       </h3>
-                      <p className="text-sm text-slate-400 font-medium">
-                        {meeting.raceCount} Races • First Race: {meeting.firstRace}
+                      <p className="text-[11px] text-white/25 mt-0.5">
+                        {meeting.raceCount} races · First: {meeting.firstRace}
                       </p>
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
-                      <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white" />
+                    <div className="w-8 h-8 rounded flex items-center justify-center bg-white/[0.03] group-hover:bg-white/[0.06] transition-colors">
+                      <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-white/40" />
                     </div>
                   </div>
                 </Link>
@@ -329,12 +320,6 @@ export default function Home() {
           )}
         </div>
       )}
-
-      {/* Footer */}
-      <div className="text-center text-xs text-slate-600 pt-6 border-t border-white/5">
-        <p>Predictions powered by V1000 APEX-ORACLE machine learning ensemble</p>
-        <p className="mt-1">© 2026 GreyhoundPredictor. For entertainment purposes only.</p>
-      </div>
     </div>
   );
 }

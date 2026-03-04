@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : 'https://greyhound-predictor.com'),
@@ -31,7 +20,7 @@ export const metadata: Metadata = {
     description: "Advanced Greyhound Predictor. Daily free tips, live race cards, and professional analysis.",
     images: [
       {
-        url: "/og-image.jpg", // Placeholder for future graphic
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Greyhound Predictor AI Platform",
@@ -54,9 +43,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    // google: "YOUR_GOOGLE_VERIFICATION_CODE", // We will add this later when they setup Google Search Console
-  },
 };
 
 export default function RootLayout({
@@ -67,25 +53,29 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0A0E17] text-slate-200 min-h-screen selection:bg-indigo-500/30 flex flex-col`}
+        className="antialiased bg-[#111318] text-[#e2e4e8] min-h-screen flex flex-col"
       >
         <Navbar />
         <main className="flex-1">
           {children}
         </main>
 
-        {/* Global Footer */}
-        <footer className="border-t border-white/5 bg-[#0D131F] py-8 mt-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center space-y-4">
-            <div className="text-xl font-bold font-heading tracking-wider">
-              <span className="text-white">GREYHOUND</span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">PREDICTOR</span>
+        {/* Footer */}
+        <footer className="border-t border-white/[0.06] bg-[#0e1016] py-8 mt-16">
+          <div className="max-w-7xl mx-auto px-6 flex flex-col items-center justify-center space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-5 h-5 bg-[#c9a84c] rounded flex items-center justify-center">
+                <span className="text-[#111318] font-extrabold text-[10px]">G</span>
+              </div>
+              <span className="text-sm font-semibold text-white/60 tracking-wide">
+                GREYHOUND PREDICTOR
+              </span>
             </div>
-            <p className="text-slate-400 text-sm">Professional Greyhound Racing Analysis</p>
-            <a href="mailto:contact@greyhound-predictor.com" className="text-indigo-400 hover:text-indigo-300 transition-colors text-sm font-medium">
+            <p className="text-white/25 text-xs">Professional Greyhound Racing Analysis</p>
+            <a href="mailto:contact@greyhound-predictor.com" className="text-[#c9a84c]/70 hover:text-[#c9a84c] transition-colors text-xs font-medium">
               contact@greyhound-predictor.com
             </a>
-            <p className="text-slate-600 text-xs pt-4">© {new Date().getFullYear()} GreyhoundPredictor. All rights reserved.</p>
+            <p className="text-white/15 text-[11px] pt-2">© {new Date().getFullYear()} GreyhoundPredictor. All rights reserved.</p>
           </div>
         </footer>
       </body>
