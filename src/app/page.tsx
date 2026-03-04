@@ -60,17 +60,16 @@ function StarRating({ count }: { count: number }) {
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
-          className={`w-4 h-4 ${
-            i <= count
-              ? count >= 5
-                ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]"
-                : count >= 4
+          className={`w-4 h-4 ${i <= count
+            ? count >= 5
+              ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]"
+              : count >= 4
                 ? "text-violet-400 fill-violet-400"
                 : count >= 3
-                ? "text-emerald-400 fill-emerald-400"
-                : "text-slate-500 fill-slate-500"
-              : "text-slate-700"
-          }`}
+                  ? "text-emerald-400 fill-emerald-400"
+                  : "text-slate-500 fill-slate-500"
+            : "text-slate-700"
+            }`}
         />
       ))}
     </div>
@@ -144,22 +143,20 @@ export default function Home() {
       <div className="flex gap-2 justify-center">
         <button
           onClick={() => setActiveTab("predictions")}
-          className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${
-            activeTab === "predictions"
-              ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25"
-              : "bg-white/5 text-slate-400 hover:bg-white/10"
-          }`}
+          className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "predictions"
+            ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25"
+            : "bg-white/5 text-slate-400 hover:bg-white/10"
+            }`}
         >
           <Zap className="w-4 h-4 inline mr-1.5 -mt-0.5" />
           Predictions
         </button>
         <button
           onClick={() => setActiveTab("meetings")}
-          className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${
-            activeTab === "meetings"
-              ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25"
-              : "bg-white/5 text-slate-400 hover:bg-white/10"
-          }`}
+          className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "meetings"
+            ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25"
+            : "bg-white/5 text-slate-400 hover:bg-white/10"
+            }`}
         >
           <MapPin className="w-4 h-4 inline mr-1.5 -mt-0.5" />
           Meetings ({meetings.length})
@@ -205,11 +202,10 @@ export default function Home() {
               <button
                 key={f.value}
                 onClick={() => setMinStars(f.value)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  minStars === f.value
-                    ? "bg-indigo-500 text-white"
-                    : "bg-white/5 text-slate-400 hover:bg-white/10"
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${minStars === f.value
+                  ? "bg-indigo-500 text-white"
+                  : "bg-white/5 text-slate-400 hover:bg-white/10"
+                  }`}
               >
                 {f.label}
               </button>
@@ -219,88 +215,87 @@ export default function Home() {
           {/* Race cards */}
           <div className="space-y-3">
             {filteredPicks.map((pick, i) => (
-              <div
-                key={`${pick.race_id}-${i}`}
-                className={`bg-[#0D131F] border rounded-2xl p-4 sm:p-5 transition-all hover:translate-y-[-2px] hover:shadow-xl ${
-                  pick.stars >= 5
+              <Link key={`${pick.race_id}-${i}`} href={`/race/${pick.race_id}`}>
+                <div
+                  className={`bg-[#0D131F] border rounded-2xl p-4 sm:p-5 transition-all hover:translate-y-[-2px] hover:shadow-xl cursor-pointer ${pick.stars >= 5
                     ? "border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.08)]"
                     : pick.stars >= 4
-                    ? "border-violet-500/20"
-                    : pick.stars >= 3
-                    ? "border-emerald-500/15"
-                    : "border-white/5"
-                }`}
-              >
-                {/* Top row */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-500 font-medium">{pick.track}</span>
-                    <span className="text-xs text-slate-600">•</span>
-                    <span className="text-xs text-slate-500">{pick.time}</span>
-                  </div>
-                  {pick.stars >= 3 && (
-                    <span
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border ${starBadgeStyles[pick.stars]}`}
-                    >
-                      {pick.label}
-                    </span>
-                  )}
-                </div>
-
-                {/* Main row */}
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div
-                    className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0 ${
-                      trapColors[pick.trap] || "bg-gray-700"
+                      ? "border-violet-500/20"
+                      : pick.stars >= 3
+                        ? "border-emerald-500/15"
+                        : "border-white/5"
                     }`}
-                  >
-                    T{pick.trap}
+                >
+                  {/* Top row */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-slate-500 font-medium">{pick.track}</span>
+                      <span className="text-xs text-slate-600">•</span>
+                      <span className="text-xs text-slate-500">{pick.time}</span>
+                    </div>
+                    {pick.stars >= 3 && (
+                      <span
+                        className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border ${starBadgeStyles[pick.stars]}`}
+                      >
+                        {pick.label}
+                      </span>
+                    )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="font-bold text-white text-base sm:text-lg block truncate">
-                      {pick.dog_name}
-                    </span>
-                    <span className="text-xs text-slate-500">
-                      {pick.distance}m • Grade {pick.grade}
-                    </span>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <StarRating count={pick.stars} />
-                  </div>
-                </div>
 
-                {/* Stats row */}
-                <div className="grid grid-cols-4 gap-3 mt-3 pt-3 border-t border-white/5">
-                  <div>
-                    <span className="text-[10px] text-slate-600 uppercase block">Prob</span>
-                    <span className="text-sm font-semibold text-white">
-                      {(pick.prob * 100).toFixed(1)}%
-                    </span>
-                    <div className="h-1 bg-slate-800 rounded-full mt-1">
-                      <div
-                        className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full"
-                        style={{ width: `${Math.min(pick.prob * 200, 100)}%` }}
-                      />
+                  {/* Main row */}
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div
+                      className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0 ${trapColors[pick.trap] || "bg-gray-700"
+                        }`}
+                    >
+                      T{pick.trap}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-white text-base sm:text-lg block truncate">
+                        {pick.dog_name}
+                      </span>
+                      <span className="text-xs text-slate-500">
+                        {pick.distance}m • Grade {pick.grade}
+                      </span>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <StarRating count={pick.stars} />
                     </div>
                   </div>
-                  <div>
-                    <span className="text-[10px] text-slate-600 uppercase block">Margin</span>
-                    <span className="text-sm font-semibold text-white">
-                      {(pick.margin * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-slate-600 uppercase block">Elo</span>
-                    <span className="text-sm font-semibold text-white">{pick.elo?.toFixed(0) || "—"}</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-slate-600 uppercase block">WR</span>
-                    <span className="text-sm font-semibold text-white">
-                      {pick.win_rate ? `${(pick.win_rate * 100).toFixed(0)}%` : "—"}
-                    </span>
+
+                  {/* Stats row */}
+                  <div className="grid grid-cols-4 gap-3 mt-3 pt-3 border-t border-white/5">
+                    <div>
+                      <span className="text-[10px] text-slate-600 uppercase block">Prob</span>
+                      <span className="text-sm font-semibold text-white">
+                        {(pick.prob * 100).toFixed(1)}%
+                      </span>
+                      <div className="h-1 bg-slate-800 rounded-full mt-1">
+                        <div
+                          className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full"
+                          style={{ width: `${Math.min(pick.prob * 200, 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-600 uppercase block">Margin</span>
+                      <span className="text-sm font-semibold text-white">
+                        {(pick.margin * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-600 uppercase block">Elo</span>
+                      <span className="text-sm font-semibold text-white">{pick.elo?.toFixed(0) || "—"}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-600 uppercase block">WR</span>
+                      <span className="text-sm font-semibold text-white">
+                        {pick.win_rate ? `${(pick.win_rate * 100).toFixed(0)}%` : "—"}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
