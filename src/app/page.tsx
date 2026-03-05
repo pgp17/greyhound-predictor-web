@@ -300,7 +300,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="space-y-2">
-              {meetings.map((meeting) => (
+              {[...meetings].sort((a, b) => a.firstRace.localeCompare(b.firstRace)).map((meeting) => (
                 <Link key={meeting.id} href={`/track/${meeting.id}`}>
                   <div className="bg-[#15181f] border border-white/[0.06] rounded-lg p-5 hover:border-white/[0.12] hover:bg-[#1a1e27] transition-all group flex justify-between items-center cursor-pointer">
                     <div>
