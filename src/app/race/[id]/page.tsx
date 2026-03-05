@@ -53,7 +53,7 @@ function TrapBadge({ trap, size = 'md' }: { trap: number; size?: 'md' | 'lg' }) 
     return (
         <div
             className={`${cls} rounded flex items-center justify-center font-bold shrink-0 ${TRAP_COLORS[trap] || 'bg-neutral-700'}`}
-            style={{ color: trap === 6 ? '#111318' : undefined }}
+            style={{ color: trap === 6 ? '#dc2626' : undefined }}
         >
             {trap}
         </div>
@@ -144,8 +144,8 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                         <button
                             onClick={() => setActiveTab('form')}
                             className={`flex items-center gap-1.5 px-4 py-2 text-xs font-medium uppercase tracking-wider transition-all ${activeTab === 'form'
-                                    ? 'bg-white/[0.08] text-white'
-                                    : 'text-white/30 hover:text-white/50 hover:bg-white/[0.02]'
+                                ? 'bg-white/[0.08] text-white'
+                                : 'text-white/30 hover:text-white/50 hover:bg-white/[0.02]'
                                 }`}
                         >
                             <History className="w-3.5 h-3.5" /> Form
@@ -153,8 +153,8 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                         <button
                             onClick={() => setActiveTab('predictions')}
                             className={`flex items-center gap-1.5 px-4 py-2 text-xs font-medium uppercase tracking-wider transition-all border-l border-white/[0.08] ${activeTab === 'predictions'
-                                    ? 'bg-white/[0.08] text-white'
-                                    : 'text-white/30 hover:text-white/50 hover:bg-white/[0.02]'
+                                ? 'bg-white/[0.08] text-white'
+                                : 'text-white/30 hover:text-white/50 hover:bg-white/[0.02]'
                                 }`}
                         >
                             <TrendingUp className="w-3.5 h-3.5" /> Predictor
@@ -236,10 +236,10 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                                                             <td className="px-3 py-2 text-center text-white/30 tabular-nums">{f.weight || '—'}</td>
                                                             <td className="px-3 py-2 text-center">
                                                                 <span className={`inline-block min-w-[28px] px-1.5 py-0.5 rounded text-[11px] font-semibold ${f.pos === '1' || f.pos === '1st'
-                                                                        ? 'bg-[#c9a84c]/15 text-[#c9a84c]'
-                                                                        : f.pos === '2' || f.pos === '2nd'
-                                                                            ? 'bg-white/[0.06] text-white/60'
-                                                                            : 'bg-white/[0.03] text-white/35'
+                                                                    ? 'bg-[#c9a84c]/15 text-[#c9a84c]'
+                                                                    : f.pos === '2' || f.pos === '2nd'
+                                                                        ? 'bg-white/[0.06] text-white/60'
+                                                                        : 'bg-white/[0.03] text-white/35'
                                                                     }`}>{f.pos}</span>
                                                             </td>
                                                         </tr>
@@ -296,10 +296,10 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                                                 <div className="h-1.5 w-full bg-white/[0.04] rounded-full overflow-hidden">
                                                     <div
                                                         className={`h-full rounded-full transition-all duration-700 ease-out ${index === 0
-                                                                ? 'bg-[#c9a84c]'
-                                                                : index === 1
-                                                                    ? 'bg-white/30'
-                                                                    : 'bg-white/15'
+                                                            ? 'bg-[#c9a84c]'
+                                                            : index === 1
+                                                                ? 'bg-white/30'
+                                                                : 'bg-white/15'
                                                             }`}
                                                         style={{ width: `${Math.max(probability, 2)}%` }}
                                                     />

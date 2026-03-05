@@ -43,7 +43,7 @@ const trapColors: Record<number, string> = {
   3: "bg-white/90 text-[#111318]",
   4: "bg-neutral-800 border border-white/10",
   5: "bg-orange-600",
-  6: "bg-neutral-800 border border-white/10",
+  6: "striped-bg",
 };
 
 const starTierStyles: Record<number, { border: string; accent: string; label: string }> = {
@@ -61,12 +61,12 @@ function StarRating({ count }: { count: number }) {
         <Star
           key={i}
           className={`w-3.5 h-3.5 ${i <= count
-              ? count >= 5
-                ? "text-[#c9a84c] fill-[#c9a84c]"
-                : count >= 4
-                  ? "text-white/50 fill-white/50"
-                  : "text-white/30 fill-white/30"
-              : "text-white/[0.06]"
+            ? count >= 5
+              ? "text-[#c9a84c] fill-[#c9a84c]"
+              : count >= 4
+                ? "text-white/50 fill-white/50"
+                : "text-white/30 fill-white/30"
+            : "text-white/[0.06]"
             }`}
         />
       ))}
@@ -143,8 +143,8 @@ export default function Home() {
         <button
           onClick={() => setActiveTab("predictions")}
           className={`px-5 py-2 text-xs font-medium uppercase tracking-wider transition-all ${activeTab === "predictions"
-              ? "bg-white/[0.08] text-white"
-              : "text-white/30 hover:text-white/50 hover:bg-white/[0.02]"
+            ? "bg-white/[0.08] text-white"
+            : "text-white/30 hover:text-white/50 hover:bg-white/[0.02]"
             }`}
         >
           Predictions
@@ -152,8 +152,8 @@ export default function Home() {
         <button
           onClick={() => setActiveTab("meetings")}
           className={`px-5 py-2 text-xs font-medium uppercase tracking-wider transition-all border-l border-white/[0.08] ${activeTab === "meetings"
-              ? "bg-white/[0.08] text-white"
-              : "text-white/30 hover:text-white/50 hover:bg-white/[0.02]"
+            ? "bg-white/[0.08] text-white"
+            : "text-white/30 hover:text-white/50 hover:bg-white/[0.02]"
             }`}
         >
           Meetings ({meetings.length})
@@ -200,8 +200,8 @@ export default function Home() {
                 key={f.value}
                 onClick={() => setMinStars(f.value)}
                 className={`px-3 py-1 rounded text-[11px] font-medium transition-all ${minStars === f.value
-                    ? "bg-white/[0.08] text-white"
-                    : "text-white/25 hover:text-white/40 hover:bg-white/[0.03]"
+                  ? "bg-white/[0.08] text-white"
+                  : "text-white/25 hover:text-white/40 hover:bg-white/[0.03]"
                   }`}
               >
                 {f.label}
@@ -239,6 +239,7 @@ export default function Home() {
                       <div
                         className={`w-9 h-9 rounded flex items-center justify-center font-bold text-xs shrink-0 ${trapColors[pick.trap] || "bg-neutral-700"
                           }`}
+                        style={{ color: pick.trap === 6 ? '#dc2626' : undefined }}
                       >
                         T{pick.trap}
                       </div>
