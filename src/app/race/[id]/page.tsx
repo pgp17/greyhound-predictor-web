@@ -35,6 +35,7 @@ interface RaceData {
     distance: string;
     grade: string;
     date: string;
+    time?: string;
     dogs: Dog[];
     source?: string;
 }
@@ -131,6 +132,11 @@ export default function RacePage({ params }: { params: Promise<{ id: string }> }
                     <div>
                         <h1 className="text-2xl font-bold text-white/95 tracking-tight">{raceData.track}</h1>
                         <div className="flex items-center gap-3 mt-1.5">
+                            {raceData.time && (
+                                <span className="text-[#c9a84c] text-sm font-semibold">
+                                    {raceData.time}
+                                </span>
+                            )}
                             <span className="text-white/30 text-sm">
                                 {raceData.grade ? `Grade ${raceData.grade}` : 'Preview'}
                                 {raceData.distance ? ` · ${raceData.distance}m` : ''}
