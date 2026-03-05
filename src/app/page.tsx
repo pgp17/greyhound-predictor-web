@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronRight, Calendar, Star, Filter } from "lucide-react";
+import { ChevronRight, Calendar, Star, Filter, Clock, LayoutGrid } from "lucide-react";
 
 interface Meeting {
   id: string;
@@ -10,6 +10,14 @@ interface Meeting {
   raceCount: number;
   topPick: string;
   firstRace: string;
+}
+
+interface TrackRace {
+  id: string;
+  time: string;
+  distance: string;
+  grade: string;
+  track: string;
 }
 
 interface Pick {
@@ -80,6 +88,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"predictions" | "meetings">("predictions");
   const [minStars, setMinStars] = useState(0);
+  const [meetingsView, setMeetingsView] = useState<"tracks" | "all">("tracks");
+  const [allRaces, setAllRaces] = useState<TrackRace[]>([]);
+  const [loadingRaces, setLoadingRaces] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -106,6 +117,48 @@ export default function Home() {
     };
     fetchData();
   }, []);
+
+  // Fetch all races when user switches to "all races" view
+  useEffect(() => {
+    if (meetingsView !== "all" || allRaces.length > 0 || meetings.length === 0) return;
+    const fetchAllRaces = async () => {
+      setLoadingRaces(true);
+      try {
+        const results = await Promise.all(
+          meetings.map((m) =>
+            fetch(`/api/proxy/track/${m.id}`, { cache: "no-store" })
+              .then((r) => (r.ok ? r.json() : null))
+              .catch(() => null)
+          )
+        );
+        const races: TrackRace[] = [];
+        for (const data of results) {
+          if (!data?.races) continue;
+          for (const r of data.races) {
+            races.push({
+              id: r.id,
+              time: r.time || "",
+              distance: r.distance || "",
+              grade: r.grade || "",
+              track: r.track || data.track || "",
+            });
+          }
+        }
+        // Sort by time extracted from "Race at HH:MM"
+        races.sort((a, b) => {
+          const tA = a.time.replace("Race at ", "");
+          const tB = b.time.replace("Race at ", "");
+          return tA.localeCompare(tB);
+        });
+        setAllRaces(races);
+      } catch (err) {
+        console.error("Error loading all races:", err);
+      } finally {
+        setLoadingRaces(false);
+      }
+    };
+    fetchAllRaces();
+  }, [meetingsView, meetings, allRaces.length]);
 
   const formattedDate = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -293,12 +346,37 @@ export default function Home() {
         </div>
       ) : (
         /* MEETINGS TAB */
-        <div>
+        <div className="space-y-4">
+          {/* Sub-toggle: By Track / All Races */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setMeetingsView("tracks")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider rounded-md transition-all ${meetingsView === "tracks"
+                  ? "bg-white/[0.08] text-white border border-white/[0.12]"
+                  : "text-white/30 hover:text-white/50 border border-transparent"
+                }`}
+            >
+              <LayoutGrid className="w-3 h-3" />
+              By Track
+            </button>
+            <button
+              onClick={() => setMeetingsView("all")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider rounded-md transition-all ${meetingsView === "all"
+                  ? "bg-white/[0.08] text-white border border-white/[0.12]"
+                  : "text-white/30 hover:text-white/50 border border-transparent"
+                }`}
+            >
+              <Clock className="w-3 h-3" />
+              All Races
+            </button>
+          </div>
+
           {meetings.length === 0 ? (
             <div className="text-center text-white/25 py-10 border border-white/[0.04] rounded-lg text-sm">
               No races available for today.
             </div>
-          ) : (
+          ) : meetingsView === "tracks" ? (
+            /* BY TRACK VIEW */
             <div className="space-y-2">
               {[...meetings].sort((a, b) => a.firstRace.localeCompare(b.firstRace)).map((meeting) => (
                 <Link key={meeting.id} href={`/track/${meeting.id}`}>
@@ -318,6 +396,39 @@ export default function Home() {
                 </Link>
               ))}
             </div>
+          ) : (
+            /* ALL RACES (CHRONOLOGICAL) VIEW */
+            loadingRaces ? (
+              <div className="flex justify-center items-center h-32">
+                <div className="w-6 h-6 border-2 border-[#c9a84c]/30 border-t-[#c9a84c] rounded-full animate-spin" />
+              </div>
+            ) : (
+              <div className="space-y-1">
+                {allRaces.map((race) => (
+                  <Link key={race.id} href={`/race/${race.id}`}>
+                    <div className="bg-[#15181f] border border-white/[0.06] rounded-lg px-4 py-3 hover:border-white/[0.12] hover:bg-[#1a1e27] transition-all group flex items-center gap-4 cursor-pointer">
+                      <span className="text-[#c9a84c] font-mono text-sm font-semibold w-12 shrink-0">
+                        {race.time.replace("Race at ", "")}
+                      </span>
+                      <span className="text-sm text-white/80 font-medium uppercase tracking-wide w-28 shrink-0">
+                        {race.track}
+                      </span>
+                      <span className="text-xs text-white/30">
+                        {race.distance}m
+                      </span>
+                      {race.grade && (
+                        <span className="text-[10px] text-white/40 border border-white/[0.08] rounded px-1.5 py-0.5">
+                          {race.grade}
+                        </span>
+                      )}
+                      <div className="ml-auto">
+                        <ChevronRight className="w-3.5 h-3.5 text-white/15 group-hover:text-white/35" />
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )
           )}
         </div>
       )}
