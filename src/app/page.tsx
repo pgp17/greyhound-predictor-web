@@ -176,6 +176,16 @@ export default function Home() {
     {} as Record<number, number>
   ) || {};
 
+  // Map race_id → max stars from predictions picks
+  const raceStars: Record<string, number> = {};
+  if (predictions?.picks) {
+    for (const p of predictions.picks) {
+      if (!raceStars[p.race_id] || p.stars > raceStars[p.race_id]) {
+        raceStars[p.race_id] = p.stars;
+      }
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-6 py-8 space-y-6">
       {/* Header */}
@@ -352,8 +362,8 @@ export default function Home() {
             <button
               onClick={() => setMeetingsView("tracks")}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider rounded-md transition-all ${meetingsView === "tracks"
-                  ? "bg-white/[0.08] text-white border border-white/[0.12]"
-                  : "text-white/30 hover:text-white/50 border border-transparent"
+                ? "bg-white/[0.08] text-white border border-white/[0.12]"
+                : "text-white/30 hover:text-white/50 border border-transparent"
                 }`}
             >
               <LayoutGrid className="w-3 h-3" />
@@ -362,8 +372,8 @@ export default function Home() {
             <button
               onClick={() => setMeetingsView("all")}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider rounded-md transition-all ${meetingsView === "all"
-                  ? "bg-white/[0.08] text-white border border-white/[0.12]"
-                  : "text-white/30 hover:text-white/50 border border-transparent"
+                ? "bg-white/[0.08] text-white border border-white/[0.12]"
+                : "text-white/30 hover:text-white/50 border border-transparent"
                 }`}
             >
               <Clock className="w-3 h-3" />
@@ -421,7 +431,8 @@ export default function Home() {
                           {race.grade}
                         </span>
                       )}
-                      <div className="ml-auto">
+                      <div className="ml-auto flex items-center gap-3">
+                        {raceStars[race.id] > 0 && <StarRating count={raceStars[race.id]} />}
                         <ChevronRight className="w-3.5 h-3.5 text-white/15 group-hover:text-white/35" />
                       </div>
                     </div>
