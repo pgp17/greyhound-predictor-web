@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { ChevronRight, Calendar, Star, Filter, Clock, LayoutGrid } from "lucide-react";
+import { ChevronRight, Calendar, Star, Filter, Clock, LayoutGrid, Trophy, Target, XCircle } from "lucide-react";
 
 interface Meeting {
   id: string;
@@ -30,11 +30,38 @@ interface Pick {
   trap: number;
   prob: number;
   margin: number;
-  elo: number;
   win_rate: number;
   banger_score: number;
   stars: number;
   label: string;
+}
+
+interface ResultRace {
+  track: string;
+  time: string;
+  race_id: string;
+  our_pick: string | null;
+  our_trap: number;
+  our_prob: number;
+  our_stars: number;
+  winner: string;
+  top3: string[];
+  verdict: "win" | "place" | "miss" | "no_pick";
+  race_url: string;
+}
+
+interface ResultsData {
+  date: string;
+  updated_at: string;
+  stats: {
+    total: number;
+    wins: number;
+    places: number;
+    misses: number;
+    win_rate: number;
+    place_rate: number;
+  };
+  races: ResultRace[];
 }
 
 interface PredictionsData {
@@ -86,11 +113,13 @@ export default function Home() {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [predictions, setPredictions] = useState<PredictionsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"predictions" | "meetings">("predictions");
+  const [activeTab, setActiveTab] = useState<"predictions" | "results" | "meetings">("predictions");
   const [minStars, setMinStars] = useState(0);
   const [meetingsView, setMeetingsView] = useState<"tracks" | "all">("tracks");
   const [allRaces, setAllRaces] = useState<TrackRace[]>([]);
   const [loadingRaces, setLoadingRaces] = useState(false);
+  const [results, setResults] = useState<ResultsData | null>(null);
+  const [loadingResults, setLoadingResults] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,6 +146,30 @@ export default function Home() {
     };
     fetchData();
   }, []);
+
+  // Fetch results
+  const fetchResults = useCallback(async () => {
+    setLoadingResults(true);
+    try {
+      const res = await fetch(`/api/proxy/results`, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        setResults(data);
+      }
+    } catch (err) {
+      console.error("Error loading results:", err);
+    } finally {
+      setLoadingResults(false);
+    }
+  }, []);
+
+  // Fetch results when tab is switched and auto-refresh every 5 min
+  useEffect(() => {
+    if (activeTab === "results" && !results) fetchResults();
+    if (activeTab !== "results") return;
+    const interval = setInterval(fetchResults, 300000);
+    return () => clearInterval(interval);
+  }, [activeTab, results, fetchResults]);
 
   // Fetch all races when user switches to "all races" view
   useEffect(() => {
@@ -211,6 +264,15 @@ export default function Home() {
             }`}
         >
           Predictions
+        </button>
+        <button
+          onClick={() => setActiveTab("results")}
+          className={`px-5 py-2 text-xs font-medium uppercase tracking-wider transition-all border-l border-white/[0.08] ${activeTab === "results"
+            ? "bg-white/[0.08] text-white"
+            : "text-white/30 hover:text-white/50 hover:bg-white/[0.02]"
+            }`}
+        >
+          🏁 Results
         </button>
         <button
           onClick={() => setActiveTab("meetings")}
@@ -318,7 +380,7 @@ export default function Home() {
                     </div>
 
                     {/* Stats row */}
-                    <div className="grid grid-cols-4 gap-4 mt-3 pt-3 border-t border-white/[0.04]">
+                    <div className="grid grid-cols-3 gap-4 mt-3 pt-3 border-t border-white/[0.04]">
                       <div>
                         <span className="text-[10px] text-white/15 uppercase block tracking-wider">Prob</span>
                         <span className="text-xs font-semibold text-white/60 tabular-nums">
@@ -338,10 +400,6 @@ export default function Home() {
                         </span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-white/15 uppercase block tracking-wider">Elo</span>
-                        <span className="text-xs font-semibold text-white/60 tabular-nums">{pick.elo?.toFixed(0) || "—"}</span>
-                      </div>
-                      <div>
                         <span className="text-[10px] text-white/15 uppercase block tracking-wider">WR</span>
                         <span className="text-xs font-semibold text-white/60 tabular-nums">
                           {pick.win_rate ? `${(pick.win_rate * 100).toFixed(0)}%` : "—"}
@@ -353,6 +411,96 @@ export default function Home() {
               );
             })}
           </div>
+        </div>
+      ) : activeTab === "results" ? (
+        /* RESULTS TAB */
+        <div className="space-y-5">
+          {loadingResults ? (
+            <div className="flex justify-center items-center h-40">
+              <div className="w-7 h-7 border-2 border-[#c9a84c]/30 border-t-[#c9a84c] rounded-full animate-spin" />
+            </div>
+          ) : !results || results.races.length === 0 ? (
+            <div className="text-center text-white/25 py-10 border border-white/[0.04] rounded-lg text-sm">
+              📭 No results available yet. Results update every 30 minutes.
+            </div>
+          ) : (
+            <>
+              {/* Stats summary */}
+              <div className="flex gap-6 text-xs">
+                <div>
+                  <span className="text-white/20 uppercase tracking-wider">Completed</span>
+                  <span className="ml-2 text-white/70 font-semibold tabular-nums">{results.stats.total}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Trophy className="w-3 h-3 text-emerald-500/50" />
+                  <span className="text-emerald-500/70 font-semibold tabular-nums">{results.stats.wins}</span>
+                  <span className="text-white/20 ml-0.5">({(results.stats.win_rate * 100).toFixed(1)}%)</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Target className="w-3 h-3 text-amber-500/50" />
+                  <span className="text-amber-500/70 font-semibold tabular-nums">{results.stats.places}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <XCircle className="w-3 h-3 text-red-500/30" />
+                  <span className="text-red-500/50 font-semibold tabular-nums">{results.stats.misses}</span>
+                </div>
+              </div>
+
+              {/* Results grouped by track */}
+              {(() => {
+                const byTrack: Record<string, ResultRace[]> = {};
+                results.races.forEach(r => {
+                  if (!byTrack[r.track]) byTrack[r.track] = [];
+                  byTrack[r.track].push(r);
+                });
+                return Object.entries(byTrack).map(([track, races]) => {
+                  const wins = races.filter(r => r.verdict === "win").length;
+                  const total = races.filter(r => r.verdict !== "no_pick").length;
+                  return (
+                    <div key={track} className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] text-white/30 font-medium uppercase tracking-wider">{track}</span>
+                        {total > 0 && (
+                          <span className="text-[10px] text-white/20">{wins}/{total} wins</span>
+                        )}
+                      </div>
+                      {races.sort((a, b) => a.time.localeCompare(b.time)).map((r, i) => (
+                        <div
+                          key={`${r.race_id}-${i}`}
+                          className={`bg-[#15181f] border rounded-lg p-4 flex items-center gap-3 ${r.verdict === "win" ? "border-emerald-500/20" : r.verdict === "place" ? "border-amber-500/15" : r.verdict === "miss" ? "border-red-500/10" : "border-white/[0.04]"
+                            }`}
+                        >
+                          {/* Verdict icon */}
+                          <div className={`w-9 h-9 rounded flex items-center justify-center text-base shrink-0 ${r.verdict === "win" ? "bg-emerald-500/10" : r.verdict === "place" ? "bg-amber-500/10" : r.verdict === "miss" ? "bg-red-500/5" : "bg-white/[0.03]"
+                            }`}>
+                            {r.verdict === "win" ? "✅" : r.verdict === "place" ? "🟡" : r.verdict === "miss" ? "❌" : "⏳"}
+                          </div>
+                          {/* Info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="text-[10px] text-white/20">
+                              {r.time}
+                              {r.our_stars > 0 && " · " + "★".repeat(r.our_stars) + "☆".repeat(5 - r.our_stars)}
+                            </div>
+                            <div className="font-semibold text-white/90 text-sm truncate">
+                              {r.our_pick ? `T${r.our_trap} ${r.our_pick}` : "No prediction"}
+                            </div>
+                            <div className="text-[11px] text-white/25 mt-0.5">
+                              {r.verdict === "win" ? "🏆 Winner!" : r.verdict === "place" ? `🥉 Top 3 — Won: ${r.winner}` : r.verdict === "miss" ? `Won: ${r.winner}` : ""}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                });
+              })()}
+
+              {/* Updated timestamp */}
+              <div className="text-center text-[10px] text-white/15 pt-2">
+                Updated: {new Date(results.updated_at).toLocaleTimeString()} · Auto-refreshes every 5 min
+              </div>
+            </>
+          )}
         </div>
       ) : (
         /* MEETINGS TAB */
