@@ -46,7 +46,7 @@ interface ResultRace {
   our_stars: number;
   winner: string;
   top3: string[];
-  verdict: "win" | "place" | "miss" | "no_pick";
+  verdict: "win" | "miss" | "no_pick";
   race_url: string;
 }
 
@@ -56,10 +56,8 @@ interface ResultsData {
   stats: {
     total: number;
     wins: number;
-    places: number;
     misses: number;
     win_rate: number;
-    place_rate: number;
   };
   races: ResultRace[];
 }
@@ -437,10 +435,6 @@ export default function Home() {
                   <span className="text-white/20 ml-0.5">({(results.stats.win_rate * 100).toFixed(1)}%)</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Target className="w-3 h-3 text-amber-500/50" />
-                  <span className="text-amber-500/70 font-semibold tabular-nums">{results.stats.places}</span>
-                </div>
-                <div className="flex items-center gap-1">
                   <XCircle className="w-3 h-3 text-red-500/30" />
                   <span className="text-red-500/50 font-semibold tabular-nums">{results.stats.misses}</span>
                 </div>
@@ -467,13 +461,13 @@ export default function Home() {
                       {races.sort((a, b) => a.time.localeCompare(b.time)).map((r, i) => (
                         <div
                           key={`${r.race_id}-${i}`}
-                          className={`bg-[#15181f] border rounded-lg p-4 flex items-center gap-3 ${r.verdict === "win" ? "border-emerald-500/20" : r.verdict === "place" ? "border-amber-500/15" : r.verdict === "miss" ? "border-red-500/10" : "border-white/[0.04]"
+                          className={`bg-[#15181f] border rounded-lg p-4 flex items-center gap-3 ${r.verdict === "win" ? "border-emerald-500/20" : r.verdict === "miss" ? "border-red-500/10" : "border-white/[0.04]"
                             }`}
                         >
                           {/* Verdict icon */}
-                          <div className={`w-9 h-9 rounded flex items-center justify-center text-base shrink-0 ${r.verdict === "win" ? "bg-emerald-500/10" : r.verdict === "place" ? "bg-amber-500/10" : r.verdict === "miss" ? "bg-red-500/5" : "bg-white/[0.03]"
+                          <div className={`w-9 h-9 rounded flex items-center justify-center text-base shrink-0 ${r.verdict === "win" ? "bg-emerald-500/10" : r.verdict === "miss" ? "bg-red-500/5" : "bg-white/[0.03]"
                             }`}>
-                            {r.verdict === "win" ? "✅" : r.verdict === "place" ? "🟡" : r.verdict === "miss" ? "❌" : "⏳"}
+                            {r.verdict === "win" ? "✅" : r.verdict === "miss" ? "❌" : "⏳"}
                           </div>
                           {/* Info */}
                           <div className="flex-1 min-w-0">
@@ -485,7 +479,7 @@ export default function Home() {
                               {r.our_pick ? `T${r.our_trap} ${r.our_pick}` : "No prediction"}
                             </div>
                             <div className="text-[11px] text-white/25 mt-0.5">
-                              {r.verdict === "win" ? "🏆 Winner!" : r.verdict === "place" ? `🥉 Top 3 — Won: ${r.winner}` : r.verdict === "miss" ? `Won: ${r.winner}` : ""}
+                              {r.verdict === "win" ? "🏆 Winner!" : r.verdict === "miss" ? `Won: ${r.winner}` : ""}
                             </div>
                           </div>
                         </div>
