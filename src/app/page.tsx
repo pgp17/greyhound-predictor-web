@@ -58,6 +58,8 @@ interface ResultsData {
     wins: number;
     misses: number;
     win_rate: number;
+    top3_hits?: number;
+    by_tier?: Record<string, { total: number; wins: number; win_rate: number; top3_hits: number }>;
   };
   races: ResultRace[];
 }
@@ -357,6 +359,12 @@ export default function Home() {
                       )}
                     </div>
 
+                    {pick.stars < 3 && (
+                      <div className="bg-red-500/10 border-l-[3px] border-red-500 p-2 mb-3 rounded-sm text-[10px] text-red-300 leading-tight">
+                        ⚠️ <b>Carrera volátil.</b> Margen de error alto.
+                      </div>
+                    )}
+
                     {/* Main row */}
                     <div className="flex items-center gap-3">
                       <div
@@ -423,27 +431,41 @@ export default function Home() {
             </div>
           ) : (
             <>
-              {/* Stats summary */}
-              <div className="flex gap-6 text-xs">
-                <div>
-                  <span className="text-white/20 uppercase tracking-wider">Completed</span>
-                  <span className="ml-2 text-white/70 font-semibold tabular-nums">{results.stats.total}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Trophy className="w-3 h-3 text-emerald-500/50" />
-                  <span className="text-emerald-500/70 font-semibold tabular-nums">{results.stats.wins}</span>
-                  <span className="text-white/20 ml-0.5">({(results.stats.win_rate * 100).toFixed(1)}%)</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <XCircle className="w-3 h-3 text-red-500/30" />
-                  <span className="text-red-500/50 font-semibold tabular-nums">{results.stats.misses}</span>
-                </div>
+              {/* Stats summary (Bangers) */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                {[
+                  { title: "Bangers (3-5⭐)", stats: results.stats, color: "text-emerald-500" },
+                  { title: "★★★★★ Ultra", stats: results.stats.by_tier?.["5_star"], color: "text-[#c9a84c]" },
+                  { title: "★★★★☆ Strong", stats: results.stats.by_tier?.["4_star"], color: "text-white/70" },
+                  { title: "★★★☆☆ Good", stats: results.stats.by_tier?.["3_star"], color: "text-emerald-500/70" },
+                ].map((tier, idx) => (
+                  <div key={idx} className="bg-[#15181f] border border-white/[0.04] p-3 rounded-lg text-center flex flex-col justify-center">
+                    <span className="text-[10px] text-white/30 uppercase tracking-wider mb-1 block">{tier.title}</span>
+                    <div className="flex items-baseline justify-center gap-1.5">
+                      <span className={`text-lg font-bold ${tier.color}`}>
+                        {tier.stats?.total ? (tier.stats.win_rate * 100).toFixed(1) : 0}%
+                      </span>
+                      <span className="text-[10px] text-white/20">WR</span>
+                    </div>
+                    <div className="text-[10px] text-white/30 mt-1 flex justify-center gap-2">
+                      <span><span className="text-white/50">{tier.stats?.wins || 0}</span>/W</span>
+                      <span><span className="text-[#c9a84c]/70">{tier.stats?.top3_hits || 0}</span>/T3</span>
+                      <span><span className="text-white/50">{tier.stats?.total || 0}</span>/Tot</span>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              {/* Results grouped by track */}
+              {/* Results grouped by track (Only Bangers) */}
               {(() => {
                 const byTrack: Record<string, ResultRace[]> = {};
-                results.races.forEach(r => {
+                const bangerRaces = results.races.filter(r => r.our_stars >= 3 && r.verdict !== "no_pick");
+                
+                if (bangerRaces.length === 0) {
+                  return <div className="text-center text-white/30 text-xs py-4 italic border border-white/[0.04] rounded-lg bg-[#15181f]">No banger races completed yet.</div>;
+                }
+
+                bangerRaces.forEach(r => {
                   if (!byTrack[r.track]) byTrack[r.track] = [];
                   byTrack[r.track].push(r);
                 });
