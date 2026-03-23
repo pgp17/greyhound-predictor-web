@@ -19,7 +19,7 @@ export default async function TrackPage({ params }: { params: Promise<{ name: st
     let errorMsg = null;
 
     try {
-        const res = await fetch(`http://46.225.29.192:8000/api/track/${name}`, {
+        const res = await fetch(`https://api.greyhound-predictor.com/api/track/${name}`, {
             cache: 'no-store'
         });
         if (!res.ok) {

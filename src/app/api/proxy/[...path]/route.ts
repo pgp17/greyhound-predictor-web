@@ -8,7 +8,7 @@ export async function GET(
 ) {
     const resolvedParams = await params;
     const backendPath = resolvedParams.path.join('/');
-    const backendUrl = `http://46.225.29.192:8000/api/${backendPath}`;
+    const backendUrl = `https://api.greyhound-predictor.com/api/${backendPath}`;
 
     try {
         const response = await fetch(backendUrl, {

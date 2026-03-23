@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/proxy/:path*',
-        destination: 'http://46.225.29.192:8000/api/:path*',
+        destination: 'https://api.greyhound-predictor.com/api/:path*',
       },
     ];
   },

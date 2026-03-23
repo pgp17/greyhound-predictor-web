@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     try {
         // 1. Fetch live tracks to add to sitemap dynamically
-        const trackRes = await fetch("http://46.225.29.192:8000/api/races/today", { cache: 'no-store' });
+        const trackRes = await fetch("https://api.greyhound-predictor.com/api/races/today", { cache: 'no-store' });
         if (trackRes.ok) {
             const trackData = await trackRes.json();
             const meetings = trackData.meetings || [];
@@ -35,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             // We do this to ensure Google indexes the specific race pages containing the AI predictions
             for (const track of meetings) {
                 try {
-                    const raceRes = await fetch(`http://46.225.29.192:8000/api/track/${track.id}`, { cache: 'no-store' });
+                    const raceRes = await fetch(`https://api.greyhound-predictor.com/api/track/${track.id}`, { cache: 'no-store' });
                     if (raceRes.ok) {
                         const raceData = await raceRes.json();
                         const races = raceData.races || [];
